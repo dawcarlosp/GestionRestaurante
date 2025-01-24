@@ -19,5 +19,5 @@ public class Cliente {
     private String email;
     //Relaciones
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
-    private List<Reserva> Reserva;
+    private List<Reserva> reservas;
 }

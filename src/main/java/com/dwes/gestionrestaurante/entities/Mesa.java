@@ -17,5 +17,5 @@ public class Mesa {
     private int numeroMesa;
     private String Descripcion;
     @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
-    private List<Reserva> Reserva;
+    private List<Reserva> reservas;
 }
