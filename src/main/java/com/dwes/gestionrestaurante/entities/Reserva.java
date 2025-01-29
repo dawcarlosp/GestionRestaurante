@@ -1,6 +1,8 @@
 package com.dwes.gestionrestaurante.entities;
 
+import com.dwes.gestionrestaurante.validation.HoraFutura;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
 import lombok.AllArgsConstructor;
 import lombok.*;
 
@@ -17,7 +19,9 @@ public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Future(message = "{reserva.fechaReserva.future}")
     private LocalDate fechaReserva;
+    @HoraFutura
     private LocalTime horaReserva;
     //Relaciones
     @ManyToOne(targetEntity = Cliente.class)
