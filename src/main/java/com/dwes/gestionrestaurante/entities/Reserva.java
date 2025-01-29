@@ -1,6 +1,7 @@
 package com.dwes.gestionrestaurante.entities;
 
 import com.dwes.gestionrestaurante.validation.HoraFutura;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,10 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Future(message = "{reserva.fechaReserva.future}")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate fechaReserva;
-    @HoraFutura
+
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime horaReserva;
     //Relaciones
     @ManyToOne(targetEntity = Cliente.class)

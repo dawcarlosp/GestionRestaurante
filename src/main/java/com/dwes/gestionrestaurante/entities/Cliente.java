@@ -1,5 +1,6 @@
 package com.dwes.gestionrestaurante.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -24,6 +25,7 @@ public class Cliente {
     @NotBlank(message = "{cliente.email.notBlank}")
     private String email;
     //Relaciones
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Reserva> reservas;
 }

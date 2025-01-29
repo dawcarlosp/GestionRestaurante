@@ -1,4 +1,5 @@
 package com.dwes.gestionrestaurante.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -19,5 +20,6 @@ public class Mesa {
     private int numeroMesa;
     private String Descripcion;
     @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Reserva> reservas;
 }
