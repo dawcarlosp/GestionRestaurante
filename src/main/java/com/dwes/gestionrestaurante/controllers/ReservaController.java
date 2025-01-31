@@ -32,7 +32,7 @@ public class ReservaController {
     @Autowired
     private MesaRepository mesaRepository;
     /**
-     * Obtener todos las reservas, provisional
+     * Obtener todas las reservas, provisional
      */
     @GetMapping
     public ResponseEntity<List<Reserva>> getMesas() {
