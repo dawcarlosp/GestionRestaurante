@@ -1,5 +1,8 @@
 package com.dwes.gestionrestaurante.controllers;
 
+import com.dwes.gestionrestaurante.DTO.LoginRequestDTO;
+import com.dwes.gestionrestaurante.DTO.LoginResponseDTO;
+import com.dwes.gestionrestaurante.DTO.UserRegisterDTO;
 import com.dwes.gestionrestaurante.config.JwtTokenProvider;
 import com.dwes.gestionrestaurante.entities.UserEntity;
 import com.dwes.gestionrestaurante.repositories.UserEntityRepository;
