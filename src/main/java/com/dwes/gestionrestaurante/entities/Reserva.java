@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import lombok.AllArgsConstructor;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.*;
 import java.util.List;
@@ -22,6 +23,7 @@ public class Reserva {
     private long id;
     @Future(message = "{reserva.fechaReserva.future}")
     @JsonFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate fechaReserva;
 
     @JsonFormat(pattern = "HH:mm")

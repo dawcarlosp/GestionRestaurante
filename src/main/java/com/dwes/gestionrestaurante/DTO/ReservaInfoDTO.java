@@ -1,7 +1,10 @@
 package com.dwes.gestionrestaurante.DTO;
 
+import com.dwes.gestionrestaurante.entities.Reserva;
+import com.dwes.gestionrestaurante.repositories.ReservaRepository;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

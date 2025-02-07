@@ -1,5 +1,6 @@
 package com.dwes.gestionrestaurante.controllers;
 
+import com.dwes.gestionrestaurante.DTO.ReservaDTO;
 import com.dwes.gestionrestaurante.entities.Cliente;
 import com.dwes.gestionrestaurante.entities.Mesa;
 import com.dwes.gestionrestaurante.entities.Reserva;
@@ -53,9 +54,10 @@ public class ReservaController {
      * Crear una nueva reserva
      */
     @PostMapping
-    public ResponseEntity<?> createReserva(@RequestBody @Valid Reserva nuevaReserva, BindingResult bindingResult) {
-        var mesa = mesaRepository.findById(nuevaReserva.getMesa().getId());
-        var cliente = clienteRepository.findById(nuevaReserva.getCliente().getId());
+    public ResponseEntity<?> createReserva(@RequestBody @Valid ReservaDTO nuevaReserva, BindingResult bindingResult) {
+
+        var mesa = mesaRepository.findById(nuevaReserva.getIdMesa());
+        var cliente = clienteRepository.findById(nuevaReserva.getIdCliente());
         if(mesa.isEmpty()){
            return ResponseEntity.badRequest().body( new ValidationErrorResponse("Error", "Debe proporcionar una mesa"));
         }
@@ -89,7 +91,14 @@ public class ReservaController {
                 }
             }
         }
-        Reserva nuevaReservaGuardada = reservaRepository.save(nuevaReserva);
+       Reserva reserva =  Reserva.builder()
+                .fechaReserva(nuevaReserva.getFechaReserva())
+                .horaReserva(nuevaReserva.getHoraReserva())
+                .cliente(cliente.get())
+                .mesa(mesa.get())
+                .numeroPersonas(nuevaReserva.getNumeroPersonas())
+                .build();
+        Reserva nuevaReservaGuardada = reservaRepository.save(reserva);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReservaGuardada); // HTTP 201 Created
     }
 }
