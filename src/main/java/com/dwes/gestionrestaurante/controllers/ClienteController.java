@@ -1,6 +1,7 @@
 package com.dwes.gestionrestaurante.controllers;
 
 import com.dwes.gestionrestaurante.entities.Cliente;
+import com.dwes.gestionrestaurante.entities.UserEntity;
 import com.dwes.gestionrestaurante.repositories.ClienteRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.*;
@@ -19,13 +20,13 @@ public class ClienteController {
      * Actualizar un cliente existente
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody @Valid Cliente clienteDetalles) {
+    public ResponseEntity<UserEntity> updateCliente(@PathVariable Long id, @RequestBody @Valid UserEntity clienteDetalles) {
         return clienteRepository.findById(id)
-                .map(cliente -> {
-                    cliente.setNombre(clienteDetalles.getNombre());
-                    cliente.setEmail(clienteDetalles.getEmail());
-                    cliente.setReservas(clienteDetalles.getReservas());
-                    Cliente clienteActualizado = clienteRepository.save(cliente);
+                .map( userEntity -> {
+                    userEntity.setNombre(clienteDetalles.getNombre());
+                    userEntity.setEmail(clienteDetalles.getEmail());
+                    userEntity.setReservas(clienteDetalles.getReservas());
+                    UserEntity clienteActualizado = clienteRepository.save(userEntity);
                     return ResponseEntity.ok(clienteActualizado); // HTTP 200 OK
                 })
                 .orElse(ResponseEntity.notFound().build()); // HTTP 404 Not Found
@@ -34,15 +35,15 @@ public class ClienteController {
      * Obtener todos los clientes
      */
     @GetMapping
-    public ResponseEntity<List<Cliente>> getClientes() {
-        List<Cliente> clientes = clienteRepository.findAll();
+    public ResponseEntity<List<UserEntity>> getClientes() {
+        List<UserEntity> clientes = clienteRepository.findAll();
         return ResponseEntity.ok(clientes); // HTTP 200 OK
     }
     /**
      * Obtener un cliente por ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> getClienteById(@PathVariable Long id) {
+    public ResponseEntity<UserEntity> getClienteById(@PathVariable Long id) {
         return clienteRepository.findById(id)
                 .map(cliente -> ResponseEntity.ok(cliente)) // HTTP 200 OK
                 .orElse(ResponseEntity.notFound().build());   // HTTP 404 Not Found
@@ -51,8 +52,8 @@ public class ClienteController {
      * Crear un nuevo cliente
      */
     @PostMapping
-    public ResponseEntity<Cliente> createCliente(@RequestBody @Valid Cliente cliente) {
-        Cliente nuevoCliente = clienteRepository.save(cliente);
+    public ResponseEntity<UserEntity> createCliente(@RequestBody @Valid UserEntity cliente) {
+        UserEntity nuevoCliente = clienteRepository.save(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCliente); // HTTP 201 Created
     }
     /**

@@ -16,9 +16,11 @@ import java.util.*;
 @Entity
 @Table(name = "clientes")
 public class Cliente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    /*
     @Length(min = 3, message = "{cliente.nombre.longitud}")
     private String nombre;
     @Email(message = "{cliente.email.invalido}")
@@ -28,4 +30,6 @@ public class Cliente {
     @JsonIgnore
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Reserva> reservas;
+    */
+
 }

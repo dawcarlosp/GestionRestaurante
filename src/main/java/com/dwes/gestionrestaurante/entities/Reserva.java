@@ -29,8 +29,8 @@ public class Reserva {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime horaReserva;
     //Relaciones
-    @ManyToOne(targetEntity = Cliente.class)
-    private Cliente cliente;
+    @ManyToOne(targetEntity = UserEntity.class)
+    private UserEntity cliente;
     @ManyToOne(targetEntity = Mesa.class)
     private Mesa mesa;
     private int numeroPersonas;

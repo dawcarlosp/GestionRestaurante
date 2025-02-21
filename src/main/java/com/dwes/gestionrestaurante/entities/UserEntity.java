@@ -1,7 +1,9 @@
 package com.dwes.gestionrestaurante.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.validation.constraints.Email;
 import java.util.*;
@@ -29,8 +31,12 @@ public class UserEntity implements UserDetails {
     private String username;
     private String password;
     private String foto;
-
-
+    @Length(min = 3, message = "{cliente.nombre.longitud}")
+    private String nombre;
+    //Relaciones
+    @JsonIgnore
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<Reserva> reservas;
     @Builder.Default    //Para que Lombok con el patrón builder cree el ArrayList
     @ElementCollection(fetch = FetchType.EAGER) // Indica que está lista se almacena en una tabla separada, pero sin una relación
     @CollectionTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
