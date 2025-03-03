@@ -1,6 +1,5 @@
 package com.dwes.gestionrestaurante.controllers;
 
-import com.dwes.gestionrestaurante.entities.Cliente;
 import com.dwes.gestionrestaurante.entities.UserEntity;
 import com.dwes.gestionrestaurante.repositories.ClienteRepository;
 import jakarta.validation.Valid;
@@ -14,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/clientes")
 public class ClienteController {
+    // no se va a usar de momento
     @Autowired
     private ClienteRepository clienteRepository;
     /**

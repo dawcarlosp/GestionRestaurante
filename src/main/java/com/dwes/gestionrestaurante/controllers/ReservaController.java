@@ -1,8 +1,6 @@
 package com.dwes.gestionrestaurante.controllers;
 
 import com.dwes.gestionrestaurante.DTO.ReservaDTO;
-import com.dwes.gestionrestaurante.entities.Cliente;
-import com.dwes.gestionrestaurante.entities.Mesa;
 import com.dwes.gestionrestaurante.entities.Reserva;
 import com.dwes.gestionrestaurante.errors.ValidationErrorResponse;
 import com.dwes.gestionrestaurante.repositories.ClienteRepository;
@@ -43,9 +41,9 @@ public class ReservaController {
     /* Eliminar reserva */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReserva(@PathVariable Long id) {
-        return mesaRepository.findById(id)
+        return reservaRepository.findById(id)
                 .map(reserva -> {
-                    mesaRepository.delete(reserva);
+                    reservaRepository.delete(reserva);
                     return ResponseEntity.noContent().build(); // HTTP 204 No Content
                 })
                 .orElse(ResponseEntity.notFound().build()); // HTTP 404 Not Found

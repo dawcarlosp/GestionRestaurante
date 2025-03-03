@@ -42,6 +42,7 @@ public class AuthController {
                             .email(userDTO.getEmail())
                             .authorities(List.of("ROLE_USER", "ROLE_ADMIN"))
                             .foto(userDTO.getFoto())
+                            .nombre(userDTO.getNombre())
                             .build());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(

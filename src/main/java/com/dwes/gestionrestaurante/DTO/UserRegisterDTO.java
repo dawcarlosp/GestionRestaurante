@@ -11,5 +11,6 @@ public class UserRegisterDTO {
     private String email;
     private String password;
     private String password2;
+    private String nombre;
     private String foto;
 }
