@@ -23,7 +23,7 @@ import java.util.Collection;
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
     @Email(message = "El email no tiene el formato válido")
     @Column(unique = true)
     private String email;

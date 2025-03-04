@@ -53,50 +53,45 @@ public class ReservaController {
      */
     @PostMapping
     public ResponseEntity<?> createReserva(@RequestBody @Valid ReservaDTO nuevaReserva, BindingResult bindingResult) {
-
         var mesa = mesaRepository.findById(nuevaReserva.getIdMesa());
         var cliente = clienteRepository.findById(nuevaReserva.getIdCliente());
-        if(mesa.isEmpty()){
-           return ResponseEntity.badRequest().body( new ValidationErrorResponse("Error", "Debe proporcionar una mesa"));
-        }
-        if(cliente.isEmpty()){
-            return ResponseEntity.badRequest().body( new ValidationErrorResponse("Error", "Debe proporcionar un cliente"));
-        }
-        if(bindingResult.hasErrors()){
-            List<ValidationErrorResponse> errors = new ArrayList<>();
 
-            // Iteramos sobre los errores y agregamos detalles más específicos
+        if (mesa.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ValidationErrorResponse("Error", "Debe proporcionar una mesa"));
+        }
+        if (cliente.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ValidationErrorResponse("Error", "Debe proporcionar un cliente"));
+        }
+        if (bindingResult.hasErrors()) {
+            List<ValidationErrorResponse> errors = new ArrayList<>();
             for (ObjectError error : bindingResult.getAllErrors()) {
                 String fieldName = ((FieldError) error).getField();
                 String errorMessage = error.getDefaultMessage();
-
-                // Agregar error específico a la lista
                 errors.add(new ValidationErrorResponse(fieldName, errorMessage));
             }
             return ResponseEntity.badRequest().body(errors);
         }
-        List<Reserva> reservasMesa = mesa.get().getReservas();
-        for(Reserva reservaMesa : reservasMesa){
-            LocalDate fechaReserva = reservaMesa.getFechaReserva();
-            LocalTime horaReserva = reservaMesa.getHoraReserva();
-            LocalTime horaNuevaReserva = nuevaReserva.getHoraReserva();
-            //Comprobación de si se trata del mismo día
-            if(fechaReserva.isEqual(nuevaReserva.getFechaReserva())){
-                Long diferenciaMinutos = Duration.between(horaNuevaReserva, horaReserva).toMinutes();
-                // Si la diferencia es inferior a noventa minutos, la reserva no se puede hacer porque se solapan
-                if(Math.abs(diferenciaMinutos) < 90){
-                    return ResponseEntity.badRequest().body(new ValidationErrorResponse("Error", "No se puede hacer la reserva, la mesa ya está ocupada en ese horario"));
-                }
-            }
+
+        // Validar solo si la misma mesa ya está ocupada a la misma hora en el mismo día
+        boolean reservaExistente = mesa.get().getReservas().stream()
+                .anyMatch(reserva -> reserva.getFechaReserva().isEqual(nuevaReserva.getFechaReserva())
+                        && reserva.getHoraReserva().equals(nuevaReserva.getHoraReserva())
+                        && reserva.getMesa().getId() == nuevaReserva.getIdMesa()); // Corregido
+
+        if (reservaExistente) {
+            return ResponseEntity.badRequest().body(new ValidationErrorResponse("Error", "No se puede hacer la reserva, la mesa ya está ocupada en ese horario"));
         }
-       Reserva reserva =  Reserva.builder()
+
+        Reserva reserva = Reserva.builder()
                 .fechaReserva(nuevaReserva.getFechaReserva())
                 .horaReserva(nuevaReserva.getHoraReserva())
                 .cliente(cliente.get())
                 .mesa(mesa.get())
                 .numeroPersonas(nuevaReserva.getNumeroPersonas())
                 .build();
+
         Reserva nuevaReservaGuardada = reservaRepository.save(reserva);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReservaGuardada); // HTTP 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReservaGuardada);
     }
+
 }
