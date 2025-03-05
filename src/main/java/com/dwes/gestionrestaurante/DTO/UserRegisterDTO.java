@@ -11,7 +11,7 @@ public class UserRegisterDTO {
     private String username;
     private String email;
     private String password;
-    @NotBlank
+    //@NotBlank
     private String password2;
     private String nombre;
     private String foto;

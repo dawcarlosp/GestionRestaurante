@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 @Component
 public class JwtTokenProvider {
@@ -16,7 +17,6 @@ public class JwtTokenProvider {
 
 
     public String  generateToken(Authentication authentication) {
-
         UserEntity user = (UserEntity) authentication.getPrincipal();
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
@@ -62,10 +62,32 @@ public class JwtTokenProvider {
         return claims.get("username").toString();
     }
     public Long getIdFromToken(String token) {
-        JwtParser parser = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
-                .build();
-        Claims claims = parser.parseClaimsJws(token).getBody();
-        return Long.parseLong(claims.get("sub").toString());
+        try {
+            // Verificación de la firma con la clave secreta.
+            JwtParser parser = Jwts.parser()
+                    .setSigningKey(SECRET_KEY.getBytes())  // Usar la clave directamente
+                    .build();
+
+            // Extraer los claims del token
+            Claims claims = parser.parseClaimsJws(token).getBody();
+
+            // Obtener el campo 'sub' (ID del usuario)
+            Object sub = claims.get("sub");
+
+            // Convertir el campo 'sub' a Long de manera segura
+            if (sub instanceof String) {
+                return Long.parseLong((String) sub);
+            } else if (sub instanceof Number) {
+                return ((Number) sub).longValue();
+            } else {
+                throw new IllegalArgumentException("El campo 'sub' no es válido");
+            }
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("El token ha expirado: " + e.getMessage(), e);
+        } catch (SignatureException e) {
+            throw new RuntimeException("Firma del token no válida: " + e.getMessage(), e);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException("Token inválido: " + e.getMessage(), e);
+        }
     }
 }
