@@ -6,18 +6,23 @@ import com.dwes.gestionrestaurante.DTO.UserRegisterDTO;
 import com.dwes.gestionrestaurante.config.JwtTokenProvider;
 import com.dwes.gestionrestaurante.entities.UserEntity;
 import com.dwes.gestionrestaurante.repositories.UserEntityRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +38,16 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<Map<String,String>> save(@RequestBody UserRegisterDTO userDTO) {
+    public ResponseEntity<Map<String, String>> save(@Valid @RequestBody UserRegisterDTO userDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            // Capturar errores específicos de cada campo
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
         try {
             UserEntity userEntity = this.userRepository.save(
                     UserEntity.builder()
@@ -46,11 +60,17 @@ public class AuthController {
                             .build());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    Map.of("email",userEntity.getEmail(),
-                            "username",userEntity.getUsername())
+                    Map.of("email", userEntity.getEmail(),
+                            "username", userEntity.getUsername())
             );
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error","Email o username ya utilizado"));
+
+        } catch (DataIntegrityViolationException e) {
+            // Controlar errores de duplicidad en email o username
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Email o username ya utilizado"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 

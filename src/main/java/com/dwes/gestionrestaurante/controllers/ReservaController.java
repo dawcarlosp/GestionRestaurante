@@ -1,6 +1,7 @@
 package com.dwes.gestionrestaurante.controllers;
 
 import com.dwes.gestionrestaurante.DTO.ReservaDTO;
+import com.dwes.gestionrestaurante.config.JwtTokenProvider;
 import com.dwes.gestionrestaurante.entities.Reserva;
 import com.dwes.gestionrestaurante.errors.ValidationErrorResponse;
 import com.dwes.gestionrestaurante.repositories.ClienteRepository;
@@ -30,6 +31,8 @@ public class ReservaController {
     private ClienteRepository clienteRepository;
     @Autowired
     private MesaRepository mesaRepository;
+    @Autowired
+    JwtTokenProvider tokenProvider;
     /**
      * Obtener todas las reservas, provisional
      */
@@ -40,9 +43,13 @@ public class ReservaController {
     }
     /* Eliminar reserva */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReserva(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReserva(@PathVariable Long id, @RequestHeader("Autorization") String token) {
+        Long idUsuario = tokenProvider.getIdFromToken(token);
         return reservaRepository.findById(id)
                 .map(reserva -> {
+                    if(!reserva.getCliente().getId().equals(idUsuario)) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Esta reserva no es tuya, por lo que no la puedes borrar");
+                    }
                     reservaRepository.delete(reserva);
                     return ResponseEntity.noContent().build(); // HTTP 204 No Content
                 })
