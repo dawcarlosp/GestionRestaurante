@@ -1,6 +1,7 @@
 package com.dwes.gestionrestaurante.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Future;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class ReservaDTO {
     private long idCliente;
     @JsonFormat(pattern = "dd-MM-yyyy")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @Future(message = "Lo sentimos, debe seleccionar una fecha futura")
     private LocalDate fechaReserva;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime horaReserva;

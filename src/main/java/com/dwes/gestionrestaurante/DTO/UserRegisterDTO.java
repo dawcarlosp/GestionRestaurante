@@ -14,11 +14,11 @@ public class UserRegisterDTO {
     @NotBlank(message = "El nombre de usuario es obligatorio")
     private String username;
     @Length(min = 3, message = "El nombre de usuario tiene que tener al menos 3 caracteres")
-    @NotBlank(message = "El email")
+    @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email no tiene el formato válido")
     @Column(unique = true)
     private String email;
-    @NotBlank(message = "Debe proporcionar una contr")
+    @NotBlank(message = "Debe proporcionar una contraseña")
     private String password;
     //@NotBlank
     //private String password2;
